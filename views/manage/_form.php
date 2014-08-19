@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use asdfstudio\admin\widgets\ActiveSelect;
 use yii\bootstrap\ActiveForm;
 use vova07\imperavi\Widget as ImperaviWidget;
@@ -38,8 +37,8 @@ use vova07\imperavi\Widget as ImperaviWidget;
                     ]
                 ]);
             } elseif ($format == 'list') {
-	            $list = (is_array($attribute['format']) ? $attribute['format'][1] : []);
-	            echo $form->field($model, $attribute['attribute'])->dropDownList($list);
+                $list = (is_array($attribute['format']) ? $attribute['format'][1] : []);
+                echo $form->field($model, $attribute['attribute'])->dropDownList($list);
             } else {
                 echo $form->field($model, $attribute['attribute']);
             }
