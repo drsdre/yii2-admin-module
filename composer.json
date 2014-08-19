@@ -10,7 +10,7 @@
             "email": "pavel@asdf404.net"
         }
     ],
-    "minimum-stability": "dev-master",
+    "minimum-stability": "dev",
     "require": {
         "vova07/yii2-imperavi-widget": "*",
         "rmrevin/yii2-fontawesome": "2.2.1",
