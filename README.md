@@ -4,6 +4,7 @@ Yii2 admin module
 This is under heavy development. Please do not use it in production!
 
 Admin module inspired by [Django](https://www.djangoproject.com/) admin.
+Interface using [SB Admin](http://startbootstrap.com/template-overviews/sb-admin/) template.
 
 ##Installation
 
