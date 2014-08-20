@@ -58,6 +58,7 @@ class ActiveSelect extends InputWidget
 
         $result = '';
         $result .= Html::beginTag('select', [
+            'name' => $this->model->formName() . '[' . $this->attribute . ']' . ($this->query->multiple ? '[]' : ''),
             'multiple' => $this->query->multiple,
             'class' => 'form-control',
         ]);
