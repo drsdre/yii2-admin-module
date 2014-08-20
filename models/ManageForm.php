@@ -94,11 +94,9 @@ class ManageForm extends Model
     {
         if ($this->model->save()) {
             foreach ($this->_relatedModels as $attribute => $models) {
-                $this->model->unlinkAll($attribute);
+                $this->model->unlinkAll($attribute, false);
                 foreach ($models as $model) {
-                    if (!$model->save()) {
-                        return false;
-                    }
+                    /* @var ActiveRecord $model */
                     $this->model->link($attribute, $model);
                 }
             }
