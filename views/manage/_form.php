@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Html;
 use asdfstudio\admin\widgets\ActiveSelect;
 use yii\bootstrap\ActiveForm;
 use vova07\imperavi\Widget as ImperaviWidget;
@@ -44,6 +45,10 @@ use vova07\imperavi\Widget as ImperaviWidget;
             }
         }?>
     </div>
+
+    <?php echo Html::submitButton('Save', [
+        'class' => 'btn btn-success'
+    ])?>
 
     <?php ActiveForm::end(); ?>
 
