@@ -43,7 +43,7 @@ class ActiveSelect extends InputWidget
                 ));
             }
         } elseif (!($this->query instanceof ActiveQuery)) {
-            throw new InvalidConfigException('"query" parameter must be instance of ActiveQuery class');
+            throw new InvalidConfigException('Parameter "query" must be an instance of ActiveQuery class');
         }
     }
 
