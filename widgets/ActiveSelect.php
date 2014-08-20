@@ -32,16 +32,12 @@ class ActiveSelect extends InputWidget
     public function init()
     {
         parent::init();
+        if (!($this->model instanceof ActiveRecord)) {
+            throw new InvalidConfigException('Parameter "model" must be an instance of ActiveRecord');
+        }
 
         if ($this->query === null) {
-            if (method_exists($this->model, 'get' . $this->attribute)) {
-                $this->query = call_user_func([$this->model, 'get' . $this->attribute]);
-            } else {
-                throw new InvalidConfigException(sprintf(
-                    'Getter for "%s" attribute not found in class %s',
-                    $this->attribute, $this->model->className()
-                ));
-            }
+            $this->query = $this->model->getRelation($this->attribute);
         } elseif (!($this->query instanceof ActiveQuery)) {
             throw new InvalidConfigException('Parameter "query" must be an instance of ActiveQuery class');
         }

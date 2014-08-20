@@ -116,23 +116,21 @@ class ManageForm extends Model
 
         foreach ($this->_adminAttributes as $attribute) {
             $attribute = (is_array($attribute)) ? ArrayHelper::getValue($attribute, 'attribute', null) : $attribute;
-            if (!$attribute) continue;
+            if (!$attribute || $this->model->hasAttribute($attribute)) continue;
 
-            if (method_exists($this->model, 'get' . $attribute)) {
-                $query = call_user_func([$this->model, 'get' . $attribute]);
-                if ($query instanceof ActiveQuery) {
-                    $data = ArrayHelper::getValue($input, $attribute, []);
+            $query = $this->model->getRelation($attribute);
+            if ($query instanceof ActiveQuery) {
+                $data = ArrayHelper::getValue($input, $attribute, []);
 
-                    $keys = array_keys($query->link);
-                    $foreignKey = $keys[0];
+                $keys = array_keys($query->link);
+                $foreignKey = $keys[0];
 
-                    /* @var ActiveQuery $modelsQuery */
-                    $modelsQuery = call_user_func([$query->modelClass, 'find']);
-                    $models = $modelsQuery->where([$foreignKey => $data])->all();
-                    $relatedModels[$attribute] = $models;
-                } else {
-                    // TODO: handle this somehow
-                }
+                /* @var ActiveQuery $modelsQuery */
+                $modelsQuery = call_user_func([$query->modelClass, 'find']);
+                $models = $modelsQuery->where([$foreignKey => $data])->all();
+                $relatedModels[$attribute] = $models;
+            } else {
+                // TODO: handle this somehow
             }
         }
         return $relatedModels;
