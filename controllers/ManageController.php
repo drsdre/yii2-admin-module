@@ -3,6 +3,7 @@
 
 namespace asdfstudio\admin\controllers;
 
+use asdfstudio\admin\models\ManageForm;
 use Yii;
 use asdfstudio\admin\models\Item;
 use yii\data\ActiveDataProvider;
@@ -71,6 +72,17 @@ class ManageController extends Controller
 
     public function actionUpdate()
     {
+        if (Yii::$app->getRequest()->getIsPost()) {
+            $form = new ManageForm([
+                'model' => $this->model,
+                'data' => Yii::$app->getRequest()->getBodyParams(),
+            ]);
+            if ($form->validate()) {
+                $transaction = Yii::$app->db->beginTransaction();
+                $form->saveModel();
+                $transaction->commit();
+            }
+        }
         return $this->render('update', [
             'item' => $this->item,
             'model' => $this->model,
