@@ -20,8 +20,8 @@ use vova07\imperavi\Widget as ImperaviWidget;
     <div class="form-group">
         <?php foreach($item->modelAttributes as $attribute) {
             $format = (is_array($attribute['format']) ? $attribute['format'][0] : $attribute['format']);
+
             if ($format == 'model' || $form == 'models') {
-                $options = (is_array($attribute['format']) ? $attribute['format'][1] : []);
                 echo $form->field($model, $attribute['attribute'])->widget(ActiveSelect::className(), [
                     'options' => $attribute,
                     'labelAttribute' => (is_array($attribute['format']) ? $attribute['format'][1]['labelAttribute'] : $attribute['format'])
