@@ -18,17 +18,6 @@ abstract class Controller extends WebController
 {
     public $layout = 'main';
 
-    public function beforeAction($action)
-    {
-        if (parent::beforeAction($action)) {
-//            $this->getView()->menu = $this->module->menu;
-//            $this->getView()->sidebar = $this->module->sidebar;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Load registered item
      * @param string $item Item id
