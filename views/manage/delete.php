@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['index', 'i
 $this->params['breadcrumbs'][] = ['label' => 'Просмотр', 'url' => ['view', 'item' => $item->id, 'id' => $model->primaryKey]];
 $this->params['breadcrumbs'][] = 'Delete';
 ?>
-<div class="driver-update">
+<div class="model-delete">
 
     <div class="driver-form">
 

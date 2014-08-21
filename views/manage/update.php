@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['index', 'i
 $this->params['breadcrumbs'][] = ['label' => 'Просмотр', 'url' => ['view', 'item' => $item->id, 'id' => $model->primaryKey]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="driver-update">
+<div class="model-update">
 
     <?= $this->render('_form', [
         'model' => $model,

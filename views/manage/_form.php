@@ -13,7 +13,7 @@ use vova07\imperavi\Widget as ImperaviWidget;
  */
 ?>
 
-<div class="driver-form">
+<div class="model-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

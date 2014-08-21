@@ -12,7 +12,7 @@ $this->title = $item->label;
 $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['manage/index', 'item' => $item->id]];
 $this->params['breadcrumbs'][] = 'Просмотр';
 ?>
-<div class="driver-view">
+<div class="model-view">
     <p>
         <?= Html::a('Update', ['update', 'item' => $item->id, 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'item' => $item->id, 'id' => $model->primaryKey], [
