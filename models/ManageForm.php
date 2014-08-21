@@ -92,6 +92,9 @@ class ManageForm extends Model
      */
     public function saveModel()
     {
+        if (!$this->model->save()) {
+            return false;
+        }
         foreach ($this->_relatedModels as $attribute => $models) {
             $query = $this->model->getRelation($attribute);
             if ($query == null) continue;
@@ -107,7 +110,7 @@ class ManageForm extends Model
                 // TODO: hasOne's models
             }
         }
-        return $this->model->save();
+        return true;
     }
 
     /**
