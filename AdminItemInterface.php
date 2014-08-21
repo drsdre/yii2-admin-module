@@ -4,7 +4,8 @@
 namespace asdfstudio\admin;
 
 
-interface AdminItemInterface {
+interface AdminItemInterface
+{
     /**
      * List of model's attributes for displaying table and view and edit pages configuration
      *
@@ -15,12 +16,8 @@ interface AdminItemInterface {
      *      [ // support related models
      *          'attribute' => 'posts', // getter name, e.g. getPosts()
      *          'format' => ['model', ['labelAttribute' => 'title']], // @see [[AdminFormatter]]
-     *          'multiple' => true, // has multiple models,
-     *          'visible' => function($model) { // can be boolean or callable
-     *              return $model->id === Yii::$app->user->id; // show field only if is the same usr
-     *          },
-     *          'create' =>  false, // allows create new related model when editing current
-     *          'editable'   => true, // allows edit this field
+     *          'visible' => true, // visible item in list, view, create and update
+     *          'editable' => false, // edit item in update and create
      *      ],
      *  ],
      * ```
@@ -53,5 +50,4 @@ interface AdminItemInterface {
      * @return string
      */
     public static function adminSlug();
-
 }

@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => $attribute['attribute'],
                 'format' => $attribute['format'],
                 'label' => $attribute['label'],
+                'visible' => $attribute['visible'],
             ];
 
             $columns[] = $column;

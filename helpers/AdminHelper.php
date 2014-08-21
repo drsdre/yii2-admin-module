@@ -46,6 +46,17 @@ class AdminHelper
                 $attribute['format'] = 'text';
             }
 
+            if (!isset($attribute['visible'])) {
+                $attribute['visible'] = true;
+            }
+            if (!isset($attribute['editable'])) {
+                $attribute['editable'] = true;
+            }
+
+            if (!isset($attribute['format'])) {
+                $attribute['format'] = 'text';
+            }
+
             if (isset($attribute['attribute'])) {
                 $attributeName = $attribute['attribute'];
                 if (!isset($attribute['label'])) {
