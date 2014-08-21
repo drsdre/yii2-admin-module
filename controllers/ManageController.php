@@ -89,8 +89,19 @@ class ManageController extends Controller
         ]);
     }
 
-    public function actionDelete($item, $id)
+    public function actionDelete()
     {
+        if (Yii::$app->getRequest()->getIsPost()) {
+            $transaction = Yii::$app->db->beginTransaction();
+            $this->model->delete();
+            $transaction->commit();
 
+            return $this->redirect(['index', 'item' => $this->item->id]);
+        }
+
+        return $this->render('delete', [
+            'item' => $this->item,
+            'model' => $this->model,
+        ]);
     }
 }
