@@ -102,13 +102,17 @@ class ManageForm extends Model
             if ($query->multiple) {
                 $this->model->unlinkAll($attribute);
                 foreach ($models as $model) {
+                    /* @var ActiveRecord $model */
                     if (!$model->save()) {
                         return false;
                     }
                     $this->model->link($attribute, $model);
                 }
             } else {
-                // TODO: hasOne's models
+                $model = isset($models[0]) ? $models[0] : null;
+                if ($model) {
+                    $this->model->link($attribute, $models[0]);
+                }
             }
         }
         return true;
