@@ -129,7 +129,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'id' => $id,
             'class' => $className,
             'label' => $label,
-            'modelAttributes' => $attributes,
+            'adminAttributes' => $attributes,
         ]);
     }
 }

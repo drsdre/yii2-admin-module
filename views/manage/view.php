@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = 'Просмотр';
             'formatter' => [
                 'class' => AdminFormatter::className(),
             ],
-            'attributes' => $item->modelAttributes
+            'attributes' => $item->adminAttributes
         ])?>
     </div>
 

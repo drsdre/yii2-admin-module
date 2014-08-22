@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <?php
         $columns = [];
-        foreach ($item->modelAttributes as $attribute) {
+        foreach ($item->adminAttributes as $attribute) {
             $column = [
                 'class' => DataColumn::className(),
                 'attribute' => $attribute['attribute'],
