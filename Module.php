@@ -8,8 +8,7 @@ use asdfstudio\admin\models\menu\Menu;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\helpers\Inflector;
+use asdfstudio\admin\helpers\AdminHelper;
 
 
 class Module extends \yii\base\Module implements BootstrapInterface
@@ -91,6 +90,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->registerRoutes([
+            $this->urlPrefix . ''                                           => 'admin/admin/index',
             $this->urlPrefix . '/manage/<item:[\w\d-_]+>'                   => 'admin/manage/index',
             $this->urlPrefix . '/manage/<item:[\w\d-_]+>/create'            => 'admin/manage/create',
             $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
@@ -124,64 +124,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $label = call_user_func([$className, 'adminLabels']);
         $label = (is_array($label)) ? $label[0] : $label;
         $attributes = call_user_func([$className, 'adminAttributes']);
-        $attributes = $this->normalizeAttributes($attributes, $className);
+        $attributes =  AdminHelper::normalizeAttributes($attributes, $className);
         $this->items[$id] = new Item([
             'id' => $id,
             'class' => $className,
             'label' => $label,
-            'modelAttributes' => $attributes,
+            'adminAttributes' => $attributes,
         ]);
-    }
-
-    /**
-     * Normalizes the attribute specifications.
-     * @throws InvalidConfigException
-     */
-    protected function normalizeAttributes($attributes, $class = null)
-    {
-        $model = null;
-        if ($class) {
-            $model = new $class([]);
-        }
-
-        $newAttributes = [];
-        foreach ($attributes as $i => $attribute) {
-            if (is_string($attribute)) {
-                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
-                    throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
-                }
-                $attribute = [
-                    'attribute' => $matches[1],
-                    'format' => isset($matches[3]) ? $matches[3] : 'text',
-                    'label' => isset($matches[5]) ? $matches[5] : null,
-                ];
-            }
-
-            if (!is_array($attribute)) {
-                throw new InvalidConfigException('The attribute configuration must be an array.');
-            }
-
-            if (isset($attribute['visible']) && !$attribute['visible']) {
-                continue;
-            }
-
-            if (!isset($attribute['format'])) {
-                $attribute['format'] = 'text';
-            }
-
-            if (!isset($attribute['multiple'])) {
-                $attribute['multiple'] = false;
-            }
-            if (isset($attribute['attribute'])) {
-                $attributeName = $attribute['attribute'];
-                if (!isset($attribute['label'])) {
-                    $attribute['label'] = $model instanceof Model ? $model->getAttributeLabel($attributeName) : Inflector::camel2words($attributeName, true);
-                }
-            } elseif (!isset($attribute['label']) || !isset($attribute['attribute'])) {
-                throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
-            }
-            $newAttributes[$i] = $attribute;
-        }
-        return $newAttributes;
     }
 }

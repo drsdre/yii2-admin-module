@@ -31,7 +31,7 @@ class Item extends Model
      * Available model attributes
      * @var array
      */
-    public  $modelAttributes = [];
+    public  $adminAttributes = [];
 
     /**
      * @inheritdoc

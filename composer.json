@@ -14,7 +14,8 @@
     "require": {
         "vova07/yii2-imperavi-widget": "*",
         "rmrevin/yii2-fontawesome": "2.2.1",
-        "cakebake/yii2-bootstrap-select": "*"
+        "cakebake/yii2-bootstrap-select": "*",
+        "asdf-studio/yii2-block": "*"
     },
     "autoload": {
         "psr-4": {

@@ -60,7 +60,8 @@ It's all. Now you can access to admin page by `/admin` path.
 ###Registering models 
 
 Now we need to register first model in our admin panel. Create class `UserItem` in your `admin/items` folder.
-Class should implement `asdfstudio\admin\AdminItemInterface`. 
+Class should implement `asdfstudio\admin\AdminItemInterface`.
+Configuration format is similar to [DetailView](http://www.yiiframework.com/doc-2.0/guide-data-widgets.html#detailview).
 
 ```php
 use asdfstudio\admin\AdminItemInterface;
@@ -72,7 +73,17 @@ class UserItem extends User implements AdminItemInterface {
         return [ // this attributes will show in table
             'id',
             'name',
-            'email',
+            'email:email',
+            [
+                'attribute' => 'role',
+                'format' => ['list', [User::ROLE_USER => 'User']],
+            ],
+            [
+                'attribute' => 'status',
+                'format' => ['list', [User::STATUS_ACTIVE => 'Active', User::STATUS_DELETED => 'Deleted']],
+            ],
+            'created_at:datetime',
+            'updated_at:datetime',
         ];
     }
 

@@ -15,14 +15,21 @@ $this->title = $item->label;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
+    <div class="form-group">
+        <?php echo Html::a('Create', ['create', 'item' => $item->id], ['class' => 'btn btn-success'])?>
+    </div>
+</div>
+
+<div class="row">
     <?php
         $columns = [];
-        foreach ($item->modelAttributes as $attribute) {
+        foreach ($item->adminAttributes as $attribute) {
             $column = [
                 'class' => DataColumn::className(),
                 'attribute' => $attribute['attribute'],
                 'format' => $attribute['format'],
                 'label' => $attribute['label'],
+                'visible' => $attribute['visible'],
             ];
 
             $columns[] = $column;

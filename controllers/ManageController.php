@@ -3,6 +3,7 @@
 
 namespace asdfstudio\admin\controllers;
 
+use asdfstudio\admin\models\ManageForm;
 use Yii;
 use asdfstudio\admin\models\Item;
 use yii\data\ActiveDataProvider;
@@ -26,14 +27,15 @@ class ManageController extends Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if (!in_array($action->id, ['index'])) {
-                $id = Yii::$app->getRequest()->getQueryParam('id', null);
-                $item = Yii::$app->getRequest()->getQueryParam('item', null);
+            $item = Yii::$app->getRequest()->getQueryParam('item', null);
+            $this->item = $this->getItem($item);
+            if ($this->item === null) {
+                throw new NotFoundHttpException();
+            }
 
-                $this->item = $this->getItem($item);
-                if ($this->item === null) {
-                    throw new NotFoundHttpException();
-                }
+            if (!in_array($action->id, ['index', 'create'])) {
+                $id = Yii::$app->getRequest()->getQueryParam('id', null);
+
                 $this->model = $this->loadModel($item, $id);
                 if ($this->model === null) {
                     throw new NotFoundHttpException();
@@ -71,14 +73,60 @@ class ManageController extends Controller
 
     public function actionUpdate()
     {
+        if (Yii::$app->getRequest()->getIsPost()) {
+            $form = new ManageForm([
+                'model' => $this->model,
+                'data' => Yii::$app->getRequest()->getBodyParams(),
+            ]);
+            if ($form->validate()) {
+                $transaction = Yii::$app->db->beginTransaction();
+                $form->saveModel();
+                $transaction->commit();
+            }
+        }
         return $this->render('update', [
             'item' => $this->item,
             'model' => $this->model,
         ]);
     }
 
-    public function actionDelete($item, $id)
+    public function actionDelete()
     {
+        if (Yii::$app->getRequest()->getIsPost()) {
+            $transaction = Yii::$app->db->beginTransaction();
+            $this->model->delete();
+            $transaction->commit();
 
+            return $this->redirect(['index', 'item' => $this->item->id]);
+        }
+
+        return $this->render('delete', [
+            'item' => $this->item,
+            'model' => $this->model,
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = Yii::createObject($this->item->class, []);
+
+        if (Yii::$app->getRequest()->getIsPost()) {
+            $form = new ManageForm([
+                'model' => $model,
+                'data' => Yii::$app->getRequest()->getBodyParams(),
+            ]);
+            if ($form->validate()) {
+                $transaction = Yii::$app->db->beginTransaction();
+                $form->saveModel();
+                $transaction->commit();
+            }
+
+            return $this->redirect(['update', 'item' => $this->item->id, 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'item' => $this->item,
+            'model' => $model,
+        ]);
     }
 }

@@ -60,6 +60,9 @@ class AdminFormatter extends Formatter
      */
     public function asModel($value, $options = ['labelAttribute' => 'id'])
     {
+        if (!$value) {
+            return $this->nullDisplay;
+        }
         if (is_array($value)) {
             $values = [];
             foreach ($value as $i => $v) {

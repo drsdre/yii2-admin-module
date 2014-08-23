@@ -8,10 +8,9 @@
 
 $this->title = $item->label;
 $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['index', 'item' => $item->id]];
-$this->params['breadcrumbs'][] = ['label' => 'Просмотр', 'url' => ['view', 'item' => $item->id, 'id' => $model->primaryKey]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Create';
 ?>
-<div class="model-update">
+<div class="model-create">
 
     <?= $this->render('_form', [
         'model' => $model,
