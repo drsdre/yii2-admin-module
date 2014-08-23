@@ -8,7 +8,7 @@
 
 $this->title = $item->label;
 $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['index', 'item' => $item->id]];
-$this->params['breadcrumbs'][] = 'Create';
+$this->params['breadcrumbs'][] = Yii::t('admin', 'Creating');
 ?>
 <div class="model-create">
 

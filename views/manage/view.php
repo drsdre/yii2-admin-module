@@ -10,15 +10,15 @@ use asdfstudio\admin\components\AdminFormatter;
 
 $this->title = $item->label;
 $this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['manage/index', 'item' => $item->id]];
-$this->params['breadcrumbs'][] = 'Просмотр';
+$this->params['breadcrumbs'][] = Yii::t('admin', 'Viewing');
 ?>
 <div class="model-view">
     <p>
-        <?= Html::a('Update', ['update', 'item' => $item->id, 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'item' => $item->id, 'id' => $model->primaryKey], [
+        <?= Html::a(Yii::t('admin', 'Edit'), ['update', 'item' => $item->id, 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('admin', 'Delete'), ['delete', 'item' => $item->id, 'id' => $model->primaryKey], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => Yii::t('admin', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
         ]) ?>

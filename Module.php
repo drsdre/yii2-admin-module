@@ -97,6 +97,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
             $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
         ]);
+
+        $this->registerTranslations();
     }
 
     /**
@@ -131,5 +133,18 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'label' => $label,
             'adminAttributes' => $attributes,
         ]);
+    }
+
+    /**
+     * Register translations
+     */
+    public function registerTranslations()
+    {
+        $i18n = Yii::$app->i18n;
+        $i18n->translations['admin'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en',
+            'basePath' => '@vendor/asdf-studio/yii2-admin-module/messages',
+        ];
     }
 }

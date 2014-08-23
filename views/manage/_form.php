@@ -46,7 +46,7 @@ use vova07\imperavi\Widget as ImperaviWidget;
         }?>
     </div>
 
-    <?php echo Html::submitButton('Save', [
+    <?php echo Html::submitButton(Yii::t('admin', 'Save'), [
         'class' => 'btn btn-success'
     ])?>
 
