@@ -138,7 +138,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * Register translations
      */
-    public function registerTranslations()
+    protected function registerTranslations()
     {
         $i18n = Yii::$app->i18n;
         $i18n->translations['admin'] = [
