@@ -6,7 +6,7 @@ use asdfstudio\block\Block;
  * @var \yii\web\View $this
  */
 
-$this->title = Yii::t('admin', 'Admin dashboard');
+$this->title = Yii::t('admin', 'Dashboard');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
