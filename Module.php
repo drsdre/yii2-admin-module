@@ -163,7 +163,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         $model = null;
         if ($class) {
-            $model = new $class([]);
+            $modelClass = call_user_func([$class, 'model']);
+            $model = new $modelClass;
         }
 
         $newAttributes = [];
