@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\grid\ActionColumn;
 use yii\grid\DataColumn;
-use asdfstudio\admin\base\components\AdminFormatter;
+use asdfstudio\admin\components\AdminFormatter;
 
 /**
  * @var \yii\web\View $this
@@ -11,7 +11,7 @@ use asdfstudio\admin\base\components\AdminFormatter;
  * @var \asdfstudio\admin\base\Entity $entity
  */
 
-$this->title = $entity->labels[0];
+$this->title = $entity->labels[1];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">

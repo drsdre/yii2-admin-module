@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use asdfstudio\admin\base\components\AdminFormatter;
+use asdfstudio\admin\components\AdminFormatter;
 
 /**
  * @var yii\web\View $this
@@ -11,7 +11,7 @@ use asdfstudio\admin\base\components\AdminFormatter;
  */
 
 $this->title = $entity->labels[0];
-$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['manage/index', 'item' => $entity->id]];
+$this->params['breadcrumbs'][] = ['label' => $entity->labels[1], 'url' => ['manage/index', 'entity' => $entity->id]];
 $this->params['breadcrumbs'][] = Yii::t('admin', 'View');
 ?>
 <div class="model-view">
