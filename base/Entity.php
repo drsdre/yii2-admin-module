@@ -4,7 +4,7 @@
 namespace asdfstudio\admin\base;
 
 
-use asdfstudio\admin\base\base\Form;
+use asdfstudio\admin\forms\Form;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
