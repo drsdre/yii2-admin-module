@@ -4,7 +4,7 @@
 namespace asdfstudio\admin\controllers;
 
 
-use asdfstudio\admin\models\Item;
+use asdfstudio\admin\base\Entity;
 use asdfstudio\admin\Module;
 use yii\db\ActiveRecord;
 use yii\web\Controller as WebController;
@@ -20,28 +20,30 @@ abstract class Controller extends WebController
 
     /**
      * Load registered item
-     * @param string $item Item id
-     * @return Item
+     * @param string $entity Entity name
+     * @return Entity
      */
-    public function getItem($item)
+    public function getEntity($entity)
     {
-        if (isset($this->module->items[$item])) {
-            return $this->module->items[$item];
+        if (isset($this->module->entities[$entity])) {
+            return $this->module->entities[$entity];
+        } elseif (isset($this->module->entitiesClasses[$entity])) {
+            return $this->getEntity($this->module->entitiesClasses[$entity]);
         }
         return null;
     }
 
     /**
      * Load model
-     * @param string|Item $item
+     * @param string $entity
      * @param string|integer $id
      * @return ActiveRecord mixed
      */
-    public function loadModel($item, $id)
+    public function loadModel($entity, $id)
     {
-        /* @var Item|string $item */
-        $item = $this->module->items[(is_string($item) ? $item : $item->id)];
+        $entity = $this->getEntity($entity);
+        $modelClass = call_user_func([$entity->modelClass, 'model']);
 
-        return call_user_func([$item->class, 'findOne'], $id);
+        return call_user_func([$modelClass, 'findOne'], $id);
     }
 }

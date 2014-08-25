@@ -16,8 +16,8 @@ use yii\web\NotFoundHttpException;
  */
 class ManageController extends Controller
 {
-    /* @var Item */
-    public $item;
+    /* @var array */
+    public $entity;
     /* @var ActiveRecord */
     public $model;
 
@@ -27,16 +27,16 @@ class ManageController extends Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $item = Yii::$app->getRequest()->getQueryParam('item', null);
-            $this->item = $this->getItem($item);
-            if ($this->item === null) {
+            $entity = Yii::$app->getRequest()->getQueryParam('entity', null);
+            $this->entity = $this->getEntity($entity);
+            if ($this->entity === null) {
                 throw new NotFoundHttpException();
             }
 
             if (!in_array($action->id, ['index', 'create'])) {
                 $id = Yii::$app->getRequest()->getQueryParam('id', null);
 
-                $this->model = $this->loadModel($item, $id);
+                $this->model = $this->loadModel($entity, $id);
                 if ($this->model === null) {
                     throw new NotFoundHttpException();
                 }
@@ -47,18 +47,17 @@ class ManageController extends Controller
         }
     }
 
-    public function actionIndex($item)
+    public function actionIndex($entity)
     {
-        /* @var Item|string $item */
-        $item = $this->module->items[$item];
+        $entity = $this->getEntity($entity);
 
-        $query = call_user_func([$item->class, 'find']);
+        $query = call_user_func([$entity->model(), 'find']);
         $modelsProvider = new ActiveDataProvider([
             'query' => $query
         ]);
 
         return $this->render('index', [
-            'item' => $item,
+            'entity' => $entity,
             'modelsProvider' => $modelsProvider,
         ]);
     }
@@ -66,7 +65,7 @@ class ManageController extends Controller
     public function actionView()
     {
         return $this->render('view', [
-            'item' => $this->item,
+            'entity' => $this->entity,
             'model' => $this->model,
         ]);
     }
@@ -85,7 +84,7 @@ class ManageController extends Controller
             }
         }
         return $this->render('update', [
-            'item' => $this->item,
+            'entity' => $this->entity,
             'model' => $this->model,
         ]);
     }
@@ -97,18 +96,18 @@ class ManageController extends Controller
             $this->model->delete();
             $transaction->commit();
 
-            return $this->redirect(['index', 'item' => $this->item->id]);
+            return $this->redirect(['index', 'item' => $this->entity['id']]);
         }
 
         return $this->render('delete', [
-            'item' => $this->item,
+            'entity' => $this->entity,
             'model' => $this->model,
         ]);
     }
 
     public function actionCreate()
     {
-        $model = Yii::createObject($this->item->class, []);
+        $model = Yii::createObject($this->entity['class'], []);
 
         if (Yii::$app->getRequest()->getIsPost()) {
             $form = new ManageForm([
@@ -121,11 +120,11 @@ class ManageController extends Controller
                 $transaction->commit();
             }
 
-            return $this->redirect(['update', 'item' => $this->item->id, 'id' => $model->id]);
+            return $this->redirect(['update', 'item' => $this->entity['id'], 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'item' => $this->item,
+            'entity' => $this->entity,
             'model' => $model,
         ]);
     }

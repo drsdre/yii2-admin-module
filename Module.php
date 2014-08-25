@@ -3,7 +3,6 @@
 
 namespace asdfstudio\admin;
 
-use asdfstudio\admin\models\Item;
 use asdfstudio\admin\models\menu\Menu;
 use Yii;
 use yii\base\BootstrapInterface;
@@ -26,7 +25,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * Registered models
      * @var array
      */
-    public $items = [];
+    public $entities = [];
+    /**
+     * Contains Class => Id for fast search
+     * @var array
+     */
+    public $entitiesClasses = [];
+
     /**
      * Top menu navigation
      * Example configuration
@@ -90,12 +95,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->registerRoutes([
-            $this->urlPrefix . ''                                           => 'admin/admin/index',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>'                   => 'admin/manage/index',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/create'            => 'admin/manage/create',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
+            $this->urlPrefix . ''                                             => 'admin/admin/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>'                   => 'admin/manage/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/create'            => 'admin/manage/create',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
         ]);
 
         $this->registerTranslations();
@@ -115,24 +120,24 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @param bool $forceRegister
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerItem($className, $forceRegister = false)
+    public function registerEntity($className, $forceRegister = false)
     {
-        $id = call_user_func([$className, 'adminSlug']);
+        $id = call_user_func([$className, 'slug']);
 
-        if (isset($this->items[$id]) && !$forceRegister) {
+        if (isset($this->entities[$id]) && !$forceRegister) {
             throw new InvalidConfigException(sprintf('Item with id "%s" already registered', $id));
         }
 
-        $label = call_user_func([$className, 'adminLabels']);
-        $label = (is_array($label)) ? $label[0] : $label;
-        $attributes = call_user_func([$className, 'adminAttributes']);
+        $labels = call_user_func([$className, 'labels']);
+        $attributes = call_user_func([$className, 'attributes']);
         $attributes =  AdminHelper::normalizeAttributes($attributes, $className);
-        $this->items[$id] = new Item([
+        $this->entities[$id] = new $className([
             'id' => $id,
-            'class' => $className,
-            'label' => $label,
-            'adminAttributes' => $attributes,
+            'modelClass' => $className,
+            'labels' => $labels,
+            'attributes' => $attributes,
         ]);
+        $this->entitiesClasses[$className] = $id;
     }
 
     /**

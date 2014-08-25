@@ -17,14 +17,15 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Edit' => 'Редактировать',
-    'Editing' => 'Редактирование',
+    'View' => 'Просмотр',
     'Admin dashboard' => 'Панель администратора',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот объект?',
     'Create' => 'Создать',
     'Creating' => 'Создание',
     'Delete' => 'Удалить',
     'Deleting' => 'Удаление',
+    'Edit' => 'Редактировать',
+    'Editing' => 'Редактирование',
     'Save' => 'Сохранить',
     'Viewing' => 'Просмотр',
 ];

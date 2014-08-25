@@ -4,18 +4,14 @@
 namespace asdfstudio\admin\components;
 
 
-use asdfstudio\admin\Module;
+use asdfstudio\admin\helpers\AdminHelper;
 use Yii;
-use asdfstudio\admin\models\Item;
 use yii\base\Formatter;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 class AdminFormatter extends Formatter
 {
-    /** Items cache */
-    private $_items = [];
-
     /**
      * Format $value as one of list values
      *
@@ -71,33 +67,10 @@ class AdminFormatter extends Formatter
             return implode(', ', $values);
         }
         $label = $value->getAttribute($options['labelAttribute']);
-        $item = $this->getItem($value->className());
+        $item = AdminHelper::getEntity($value->className());
         if ($item !== null) {
             return Html::a($label, ['view', 'item' => $item->id, 'id' => $value->primaryKey]);
         }
         return $label;
-    }
-
-    /**
-     * @param string $class Class name
-     * @return Item|null
-     */
-    protected function getItem($class)
-    {
-        if (isset($this->_items[$class])) {
-            return $this->_items[$class];
-        }
-
-        /* @var Module $module */
-        $module = Yii::$app->controller->module;
-
-        /* @var Item $item */
-        foreach ($module->items as $item) {
-            if ($item->class == $class) {
-                $this->_items[$class] = $item;
-                return $item;
-            }
-        }
-        return null;
     }
 }

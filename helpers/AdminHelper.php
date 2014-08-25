@@ -4,6 +4,9 @@
 namespace asdfstudio\admin\helpers;
 
 
+use asdfstudio\admin\Module;
+use Yii;
+use asdfstudio\admin\base\Entity;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Inflector;
@@ -68,5 +71,23 @@ class AdminHelper
             $newAttributes[$i] = $attribute;
         }
         return $newAttributes;
+    }
+
+    /**
+     * @param string $entity Entity class name or Id
+     * @return Entity|null
+     */
+    public static function getEntity($entity)
+    {
+        /* @var Module $module */
+        $module = Yii::$app->controller->module;
+
+        if (isset($module->entities[$entity])) {
+            return $module->entities[$entity];
+        } elseif (isset($module->entitiesClasses[$entity])) {
+            return static::getEntity($module->entitiesClasses[$entity]);
+        }
+
+        return null;
     }
 }

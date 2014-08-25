@@ -4,9 +4,9 @@
 namespace asdfstudio\admin\models;
 
 
+use asdfstudio\admin\base\Entity;
 use asdfstudio\admin\helpers\AdminHelper;
 use Yii;
-use asdfstudio\admin\AdminItemInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQuery;
@@ -47,11 +47,11 @@ class ManageForm extends Model
 
         $this->model->load($this->data);
 
-        if (!($this->model instanceof AdminItemInterface)) {
+        if (!($this->model instanceof Entity)) {
             throw new InvalidConfigException();
         }
 
-        $this->_adminAttributes = AdminHelper::normalizeAttributes($this->model->adminAttributes(), $this->model->className());
+        $this->_adminAttributes = AdminHelper::normalizeAttributes($this->model->attributes(), $this->model->className());
         $this->_relatedModels = $this->loadRelatedModels();
     }
 

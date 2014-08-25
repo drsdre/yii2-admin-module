@@ -2,20 +2,22 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use asdfstudio\admin\components\AdminFormatter;
+use asdfstudio\admin\base\components\AdminFormatter;
 
-/* @var $this yii\web\View */
-/* @var $model \yii\db\ActiveRecord */
-/* @var $item \asdfstudio\admin\models\Item */
+/**
+ * @var yii\web\View $this
+ * @var yii\db\ActiveRecord $model
+ * @var asdfstudio\admin\base\Entity $entity
+ */
 
-$this->title = $item->label;
-$this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['manage/index', 'item' => $item->id]];
-$this->params['breadcrumbs'][] = Yii::t('admin', 'Viewing');
+$this->title = $entity->labels[0];
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['manage/index', 'item' => $entity->id]];
+$this->params['breadcrumbs'][] = Yii::t('admin', 'View');
 ?>
 <div class="model-view">
     <p>
-        <?= Html::a(Yii::t('admin', 'Edit'), ['update', 'item' => $item->id, 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('admin', 'Delete'), ['delete', 'item' => $item->id, 'id' => $model->primaryKey], [
+        <?= Html::a(Yii::t('admin', 'Edit'), ['update', 'entity' => $entity->id, 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('admin', 'Delete'), ['delete', 'entity' => $entity->id, 'id' => $model->primaryKey], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Yii::t('admin', 'Are you sure you want to delete this item?'),
@@ -30,7 +32,7 @@ $this->params['breadcrumbs'][] = Yii::t('admin', 'Viewing');
             'formatter' => [
                 'class' => AdminFormatter::className(),
             ],
-            'attributes' => $item->adminAttributes
+            'attributes' => $entity->attributes
         ])?>
     </div>
 

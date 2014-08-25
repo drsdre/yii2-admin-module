@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 /**
  * @var yii\web\View $this
  * @var yii\db\ActiveRecord $model
- * @var asdfstudio\admin\models\Item $item
+ * @var asdfstudio\admin\base\models\Item $item
  */
 
 $this->title = $item->label;

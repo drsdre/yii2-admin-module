@@ -9,7 +9,7 @@ use vova07\imperavi\Widget as ImperaviWidget;
  * @var yii\web\View $this
  * @var yii\db\ActiveRecord $model
  * @var yii\widgets\ActiveForm $form
- * @var asdfstudio\admin\models\Item $item
+ * @var asdfstudio\admin\base\Entity $entity
  */
 ?>
 
@@ -18,7 +18,7 @@ use vova07\imperavi\Widget as ImperaviWidget;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="form-group">
-        <?php foreach($item->adminAttributes as $attribute) {
+        <?php foreach($entity->attributes as $attribute) {
             $format = (is_array($attribute['format']) ? $attribute['format'][0] : $attribute['format']);
 
             if ($format == 'model' || $form == 'models') {

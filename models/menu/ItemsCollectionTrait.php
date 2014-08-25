@@ -4,8 +4,6 @@
 namespace asdfstudio\admin\models\menu;
 
 
-use asdfstudio\admin\AdminItemInterface;
-use asdfstudio\admin\models\Item as AdminItem;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
@@ -18,7 +16,7 @@ trait ItemsCollectionTrait
     public $items = [];
 
     /**
-     * @param string|AdminItemInterface Item label or [[AdminItemInterface]] object
+     * @param string Item label or [[AdminItemInterface]] object
      * @param [mixed] Url configuation
      * @param [bool|callable] Acive status
      * @param [string] Id of item
@@ -68,11 +66,11 @@ trait ItemsCollectionTrait
      */
     protected function addObjectItem($item)
     {
-        $label = call_user_func([$item, 'adminLabels']);
-        $label = is_array($label) ? $label[0] : $label;
+        $label = call_user_func([$item, 'labels']);
+        $label = is_array($label) ? $label[1] : $label;
         return $this->addStringItem($label, [
             'manage/index',
-            'item' => call_user_func([$item, 'adminSlug']),
-        ], false, call_user_func([$item, 'adminSlug']));
+            'entity' => call_user_func([$item, 'slug']),
+        ], false, call_user_func([$item, 'slug']));
     }
 }
