@@ -6,6 +6,7 @@ namespace asdfstudio\admin\controllers;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use asdfstudio\admin\base\Entity;
 use asdfstudio\admin\forms\Form;
@@ -74,14 +75,13 @@ class ManageController extends Controller
     {
         if (Yii::$app->getRequest()->getIsPost()) {
             /* @var Form $form */
-            $form = Yii::createObject($this->entity->form('update'));
-            $data = Yii::$app->getRequest()->getBodyParams();
-            $actions = $form->getActions();
-            $this->model->load($data);
-            foreach ($actions as $action => $closure) {
-                if (isset($data[$action])) {
-                    call_user_func($closure, $this->model);
-                }
+            $form = Yii::createObject(ArrayHelper::merge([
+                'model' => $this->model,
+            ], $this->entity->form('update')));
+
+            $form->model->load(Yii::$app->getRequest()->getBodyParams());
+            if ($form->model->validate()) {
+                $form->saveModel($this->entity->attributes);
             }
         }
         return $this->render('update', [
@@ -109,20 +109,6 @@ class ManageController extends Controller
     public function actionCreate()
     {
         $model = Yii::createObject($this->entity['class'], []);
-
-        if (Yii::$app->getRequest()->getIsPost()) {
-            $form = new ManageForm([
-                'model' => $model,
-                'data' => Yii::$app->getRequest()->getBodyParams(),
-            ]);
-            if ($form->validate()) {
-                $transaction = Yii::$app->db->beginTransaction();
-                $form->saveModel();
-                $transaction->commit();
-            }
-
-            return $this->redirect(['update', 'item' => $this->entity['id'], 'id' => $model->id]);
-        }
 
         return $this->render('create', [
             'entity' => $this->entity,

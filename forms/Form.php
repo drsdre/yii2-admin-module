@@ -6,6 +6,7 @@ namespace asdfstudio\admin\forms;
 
 use Yii;
 use asdfstudio\admin\forms\widgets\Button;
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\ActiveForm;
 use yii\db\ActiveRecord;
@@ -179,5 +180,31 @@ class Form extends ActiveForm
             return $result;
         }
         return [];
+    }
+
+    /**
+     * @throws \yii\base\InvalidCallException
+     */
+    public function runActions()
+    {
+        $data = Yii::$app->getRequest()->getBodyParams();
+        $actions = $this->getActions();
+
+        foreach ($actions as $action => $closure) {
+            if (isset($data[$action])) {
+                if (is_string($data[$action])) {
+                    call_user_func([$this, $closure], $this->model);
+                } elseif (method_exists($this, 'action' . $closure)) {
+                    call_user_func($closure, $this->model);
+                } else {
+                    throw new InvalidCallException(sprintf('Method "%s" not found', $closure));
+                }
+            }
+        }
+    }
+
+    public function saveModel($attributes)
+    {
+        $this->model->save();
     }
 }
