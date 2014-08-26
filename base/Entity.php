@@ -104,16 +104,24 @@ abstract class Entity extends Component
 
     /**
      * Class name of form using for update or create operation
-     * Default is `asdfstudio\admin\base\Form`
+     * Default form class is `asdfstudio\admin\base\Form`
+     * For configuration syntax see [[[Form]]
      *
      * ```php
-     *  return vendorname\blog\forms\PostForm::className();
+     *  return [
+     *      'class' => vendorname\blog\forms\PostForm::className(),
+     *      'fields' => [
+     *          ...
+     *      ]
+     *  ];
      * ```
      *
-     * @return string
+     * @return array
      */
     public static function form()
     {
-        return Form::className();
+        return [
+            'class' => Form::className(),
+        ];
     }
 }
