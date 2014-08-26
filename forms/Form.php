@@ -10,7 +10,6 @@ use yii\base\InvalidConfigException;
 use yii\bootstrap\ActiveForm;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\helpers\Inflector;
 
 /**
@@ -48,6 +47,7 @@ use yii\helpers\Inflector;
  *                  'attribute' => 'tags', // model's attribute name
  *              ],
  *              [
+ *                  'id' => 'publish', // id is required for binding and executing action
  *                  'class' => Button::className(), // renders button, instead of input field,
  *                  'label' => 'Publish',
  *                  'action' => function($model) { // can be callable or string
@@ -78,6 +78,9 @@ class Form extends ActiveForm
      */
     public $renderSaveButton = true;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -102,7 +105,8 @@ class Form extends ActiveForm
      */
     public function run()
     {
-        return $this->renderForm($this->fields) . Html::endForm();
+        echo $this->renderForm($this->fields);
+        parent::run();
     }
 
     /**
@@ -113,6 +117,9 @@ class Form extends ActiveForm
      */
     public function renderForm($fields)
     {
+        if (isset($fields['visible']) && !$fields['visible']) {
+            return '';
+        }
         if (!is_array($fields)) {
             throw new InvalidConfigException('Parameter "fields" must be an array');
         } elseif (isset($fields['class'])) {
@@ -146,5 +153,31 @@ class Form extends ActiveForm
             }
             return $out;
         }
+    }
+
+    /**
+     * Return registered actions list indexed by name
+     * @param array $actions
+     * @return array
+     */
+    public function getActions($actions = null)
+    {
+        if ($actions === null) {
+            $actions = $this->fields;
+        }
+        if (is_array($actions)) {
+            $result = [];
+            if (isset($actions['action']) && isset($actions['id']) && is_a($actions['class'], Button::className(), true)) {
+                $result[$actions['id']] = $actions['action'];
+            } else {
+                $res = [];
+                foreach ($actions as $action) {
+                    $res = ArrayHelper::merge($res, $this->getActions($action));
+                }
+                $result = ArrayHelper::merge($result, $res);
+            }
+            return $result;
+        }
+        return [];
     }
 }

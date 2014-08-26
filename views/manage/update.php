@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = Yii::t('admin', 'Editing');
     <?= $this->render('_form', [
         'model' => $model,
         'entity' => $entity,
+        'scenario' => 'update',
     ]) ?>
 
 </div>

@@ -3,12 +3,12 @@
 
 namespace asdfstudio\admin\controllers;
 
-use asdfstudio\admin\models\ManageForm;
 use Yii;
-use asdfstudio\admin\models\Item;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
+use asdfstudio\admin\base\Entity;
+use asdfstudio\admin\forms\Form;
 
 /**
  * Class ManageController
@@ -16,7 +16,7 @@ use yii\web\NotFoundHttpException;
  */
 class ManageController extends Controller
 {
-    /* @var array */
+    /* @var Entity */
     public $entity;
     /* @var ActiveRecord */
     public $model;
@@ -73,14 +73,15 @@ class ManageController extends Controller
     public function actionUpdate()
     {
         if (Yii::$app->getRequest()->getIsPost()) {
-            $form = new ManageForm([
-                'model' => $this->model,
-                'data' => Yii::$app->getRequest()->getBodyParams(),
-            ]);
-            if ($form->validate()) {
-                $transaction = Yii::$app->db->beginTransaction();
-                $form->saveModel();
-                $transaction->commit();
+            /* @var Form $form */
+            $form = Yii::createObject($this->entity->form('update'));
+            $data = Yii::$app->getRequest()->getBodyParams();
+            $actions = $form->getActions();
+            $this->model->load($data);
+            foreach ($actions as $action => $closure) {
+                if (isset($data[$action])) {
+                    call_user_func($closure, $this->model);
+                }
             }
         }
         return $this->render('update', [

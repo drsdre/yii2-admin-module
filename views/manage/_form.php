@@ -8,8 +8,9 @@ use yii\helpers\ArrayHelper;
  * @var yii\widgets\ActiveForm $form
  * @var asdfstudio\admin\base\Entity $entity
  * @var asdfstudio\admin\forms\Form $formClass
+ * @var string $scenario
  */
-$formOptions = $entity::form();
+$formOptions = $entity::form($scenario);
 $formClass = $formOptions['class'];
 ?>
 
