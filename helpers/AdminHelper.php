@@ -7,6 +7,7 @@ namespace asdfstudio\admin\helpers;
 use Yii;
 use asdfstudio\admin\Module;
 use asdfstudio\admin\base\Entity;
+use yii\db\ActiveRecord;
 
 class AdminHelper
 {
@@ -26,5 +27,28 @@ class AdminHelper
         }
 
         return null;
+    }
+
+    /**
+     * Return value of nested attribute.
+     *
+     * ```php
+     * // e.g. $post is Post model. We need to get a name of owmer. Owner is related model.
+     *
+     * AdminHelper::resolveAttribute('owner.username', $post); // it returns username from owner attribute
+     * ```
+     *
+     * @param string $attribute
+     * @param ActiveRecord $model
+     * @return string
+     */
+    public static function resolveAttribute($attribute, $model)
+    {
+        $path = explode('.', $attribute);
+        $attr = $model;
+        foreach ($path as $a) {
+            $attr = $attr->{$a};
+        }
+        return $attr;
     }
 }

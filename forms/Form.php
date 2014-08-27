@@ -137,7 +137,7 @@ class Form extends ActiveForm
                 if (!isset($fields['attribute'])) {
                     throw new InvalidConfigException('Layout\'s field config must have "attribute" property');
                 }
-                return $this->field($this->model, $fields['attribute'], $fields);
+                return $this->field($this->model, $fields['attribute'])->widget($fields['class'], $fields);
             }
         } elseif (isset($fields['items'])) {
             $items = $this->renderForm($fields['items']);
@@ -205,6 +205,6 @@ class Form extends ActiveForm
 
     public function saveModel($attributes)
     {
-        $this->model->save();
+       return $this->model->save();
     }
 }
