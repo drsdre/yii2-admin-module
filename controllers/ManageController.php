@@ -108,7 +108,24 @@ class ManageController extends Controller
 
     public function actionCreate()
     {
-        $model = Yii::createObject($this->entity['class'], []);
+        $model = Yii::createObject($this->entity->model(), []);
+        if (Yii::$app->getRequest()->getIsPost()) {
+            /* @var Form $form */
+            $form = Yii::createObject(ArrayHelper::merge([
+                'model' => $model,
+            ], $this->entity->form('update')));
+
+            $form->model->load(Yii::$app->getRequest()->getBodyParams());
+            if ($form->model->validate()) {
+                if ($form->saveModel($this->entity->attributes)) {
+                    return $this->redirect([
+                        'update',
+                        'entity' => $this->entity->id,
+                        'id' => $form->model->primaryKey,
+                    ]);
+                }
+            }
+        }
 
         return $this->render('create', [
             'entity' => $this->entity,
