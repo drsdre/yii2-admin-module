@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
     <div class="form-group">
-        <?php echo Html::a(Yii::t('admin', 'Create'), ['create', 'item' => $entity->id], ['class' => 'btn btn-success'])?>
+        <?php echo Html::a(Yii::t('admin', 'Create'), ['create', 'entity' => $entity->id], ['class' => 'btn btn-success'])?>
     </div>
 </div>
 
