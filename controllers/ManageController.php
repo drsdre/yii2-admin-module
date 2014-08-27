@@ -113,7 +113,7 @@ class ManageController extends Controller
             /* @var Form $form */
             $form = Yii::createObject(ArrayHelper::merge([
                 'model' => $model,
-            ], $this->entity->form('update')));
+            ], $this->entity->form('create')));
 
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
             if ($form->model->validate()) {
