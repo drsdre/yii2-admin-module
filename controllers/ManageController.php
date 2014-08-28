@@ -80,6 +80,7 @@ class ManageController extends Controller
             ], $this->entity->form('update')));
 
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
+            $form->runActions();
             if ($form->model->validate()) {
                 $form->saveModel();
             }

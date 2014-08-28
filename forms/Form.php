@@ -128,7 +128,7 @@ class Form extends ActiveForm
                 return Button::widget(ArrayHelper::merge([
                     'tagName' => 'input',
                     'options' => [
-                        'name' => Inflector::slug($fields['label']),
+                        'name' => $fields['id'],
                         'type' => 'submit',
                         'value' => $fields['label']
                     ],
@@ -192,10 +192,10 @@ class Form extends ActiveForm
 
         foreach ($actions as $action => $closure) {
             if (isset($data[$action])) {
-                if (is_string($data[$action])) {
-                    call_user_func([$this, $closure], $this->model);
-                } elseif (method_exists($this, 'action' . $closure)) {
+                if (is_callable($closure)) {
                     call_user_func($closure, $this->model);
+                } elseif (is_string($closure)) {
+                    call_user_func([$this->model, $closure]);
                 } else {
                     throw new InvalidCallException(sprintf('Method "%s" not found', $closure));
                 }
