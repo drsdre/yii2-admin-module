@@ -203,8 +203,8 @@ class Form extends ActiveForm
         }
     }
 
-    public function saveModel($attributes)
+    public function saveModel()
     {
-       return $this->model->save();
+        return $this->model->save();
     }
 }

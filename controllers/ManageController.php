@@ -81,7 +81,7 @@ class ManageController extends Controller
 
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
             if ($form->model->validate()) {
-                $form->saveModel($this->entity->attributes);
+                $form->saveModel();
             }
         }
         return $this->render('update', [
@@ -97,7 +97,7 @@ class ManageController extends Controller
             $this->model->delete();
             $transaction->commit();
 
-            return $this->redirect(['index', 'item' => $this->entity->id]);
+            return $this->redirect(['index', 'item' => $this->entity['id']]);
         }
 
         return $this->render('delete', [
@@ -113,11 +113,11 @@ class ManageController extends Controller
             /* @var Form $form */
             $form = Yii::createObject(ArrayHelper::merge([
                 'model' => $model,
-            ], $this->entity->form('create')));
+            ], $this->entity->form('update')));
 
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
             if ($form->model->validate()) {
-                if ($form->saveModel($this->entity->attributes)) {
+                if ($form->saveModel()) {
                     return $this->redirect([
                         'update',
                         'entity' => $this->entity->id,
