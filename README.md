@@ -73,15 +73,15 @@ class UserEntity extends Entity
     {
         return [ // this attributes will show in table and detail view
             'id',
-            'name',
+            'username',
             'email:email',
             [
                 'attribute' => 'role',
-                'format' => ['list', [User::ROLE_USER => 'User']],
+                'format' => ['list', [User::ROLE_USER => 'User', User::ROLE_ADMIN => 'Admin']],
             ],
             [
                 'attribute' => 'status',
-                'format' => ['list', [User::STATUS_ACTIVE => 'Active', User::STATUS_DELETED => 'Deleted']],
+                'format' => ['list', [User::STATUS_ACTIVE => 'Active', User::STATUS_DELETED => 'Deleted', User::STATUS_BANNED => 'Banned']],
             ],
             'created_at:datetime',
             'updated_at:datetime',
@@ -140,7 +140,8 @@ class UserEntity extends Entity
                                 'class' => 'btn btn-danger'
                             ],
                             'action' => function(User $model) {
-                                $model->setAttribute('active', false);
+                                $model->setAttribute('status', User::STATUS_BANNED);
+                                return true;
                             },
                         ],
                     ],
