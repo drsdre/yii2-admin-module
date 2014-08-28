@@ -142,6 +142,18 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     /**
+     * Register controller in module. Needed for creating custom pages
+     * @param string $id
+     * @param string $controller
+     */
+    public function registerController($id, $controller)
+    {
+        $this->controllerMap[$id] = [
+            'class' => $controller,
+        ];
+    }
+
+    /**
      * Register translations
      */
     protected function registerTranslations()
