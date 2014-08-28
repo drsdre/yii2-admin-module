@@ -118,7 +118,7 @@ abstract class Entity extends Component
      *
      * @return array
      */
-    public static function form()
+    public function form()
     {
         return [
             'class' => Form::className(),
