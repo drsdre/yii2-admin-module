@@ -7,7 +7,6 @@ use asdfstudio\admin\models\menu\Menu;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use asdfstudio\admin\helpers\AdminHelper;
 use yii\base\Model;
 use yii\helpers\Inflector;
 
