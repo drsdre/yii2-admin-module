@@ -115,7 +115,7 @@ class ManageController extends Controller
             }
             $transaction->commit();
 
-            return $this->redirect(['index', 'item' => $this->entity['id']]);
+            return $this->redirect(['index', 'item' => $this->entity->id]);
         }
 
         return $this->render('delete', [
