@@ -17,6 +17,22 @@ use ReflectionClass;
 abstract class Entity extends Component
 {
     /**
+     * Triggers after new model creation
+     */
+    const EVENT_CREATE_SUCCESS  = 'entity_create_success';
+    const EVENT_CREATE_FAIL     = 'entity_create_fail';
+    /**
+     * Trigers after model updated
+     */
+    const EVENT_UPDATE_SUCCESS  = 'entity_update_success';
+    const EVENT_UPDATE_FAIL     = 'entity_update_fail';
+    /**
+     * Triggers after model deleted
+     */
+    const EVENT_DELETE_SUCCESS  = 'entity_delete_success';
+    const EVENT_DELETE_FAIL     = 'entity_delete_fail';
+
+    /**
      * @var string Entity Id
      */
     public $id;

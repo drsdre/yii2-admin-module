@@ -4,6 +4,7 @@
 namespace asdfstudio\admin\controllers;
 
 use Yii;
+use yii\base\Event;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
@@ -105,7 +106,15 @@ class ManageController extends Controller
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
             $form->runActions();
             if ($form->model->validate()) {
-                $form->saveModel();
+                if ($form->saveModel()) {
+                    $this->module->trigger(Entity::EVENT_UPDATE_SUCCESS, new Event([
+                        'sender' => $form->model,
+                    ]));
+                } else {
+                    $this->module->trigger(Entity::EVENT_UPDATE_FAIL, new Event([
+                        'sender' => $form->model,
+                    ]));
+                }
             }
         }
         return $this->render('update', [
@@ -118,7 +127,15 @@ class ManageController extends Controller
     {
         if (Yii::$app->getRequest()->getIsPost()) {
             $transaction = Yii::$app->db->beginTransaction();
-            $this->model->delete();
+            if ($this->model->delete()) {
+                $this->module->trigger(Entity::EVENT_DELETE_SUCCESS, new Event([
+                    'sender' => $this->model,
+                ]));
+            } else {
+                $this->module->trigger(Entity::EVENT_DELETE_FAIL, new Event([
+                    'sender' => $this->model,
+                ]));
+            }
             $transaction->commit();
 
             return $this->redirect(['index', 'item' => $this->entity->id]);
@@ -142,11 +159,19 @@ class ManageController extends Controller
             $form->model->load(Yii::$app->getRequest()->getBodyParams());
             if ($form->model->validate()) {
                 if ($form->saveModel()) {
+                    $this->module->trigger(Entity::EVENT_CREATE_SUCCESS, new Event([
+                        'sender' => $form->model,
+                    ]));
+
                     return $this->redirect([
                         'update',
                         'entity' => $this->entity->id,
                         'id' => $form->model->primaryKey,
                     ]);
+                } else {
+                    $this->module->trigger(Entity::EVENT_CREATE_FAIL, new Event([
+                        'sender' => $form->model,
+                    ]));
                 }
             }
         }
