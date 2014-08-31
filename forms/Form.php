@@ -90,6 +90,7 @@ class Form extends ActiveForm
                 'wrapper' => '<div class="form-group">{items}</div>',
                 'items' => [
                     [
+                        'id' => 'save',
                         'class' => Button::className(),
                         'label' => Yii::t('admin', 'Save'),
                         'options' => [
