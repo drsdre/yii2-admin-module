@@ -18,6 +18,18 @@ abstract class Controller extends WebController
 {
     public $layout = 'main';
 
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            $this->view->params['breadcrumbs'][] = [
+                'label' => \Yii::t('admin', 'Dashboard'),
+                'url' => ['admin/index'],
+            ];
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Load registered item
      * @param string $entity Entity name
