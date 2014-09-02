@@ -174,3 +174,47 @@ class Module extends AdminModule {
 Now go to `/admin/manage/user` and you will see table with all users.
 
 For example view [asdf-studio/yii2-blog-module](https://github.com/asdf-studio/yii2-blog-module).
+
+
+###Creating custom pages
+
+For creating custom page you should create controller in your `@app/modules/admin/controllers` dir.
+It should inherit `asdfstudio\admin\controllers\Controller`:
+
+```php
+namespace frontend\modules\admin\controllers;
+
+use asdfstudio\admin\controllers\Controller;
+
+class MyController extends Controller
+{
+    public function actionIndex() {
+        return $this->render('@app/modules/admin/views/my/index');
+    }
+}
+```
+
+There is problem with `$viewPath`. Yii2 doesn't allow to redefine `$viewPath` in runtime, so we need to pass full path to our view.
+Also you can redefine `render()` method:
+
+```php
+public function render($view, $params = []) {
+    return parent::render("@app/modules/admin/views/{$this->id}/{$view}", $params);
+}
+```
+
+After creating controller we need to register it in admin module:
+
+```php
+public function init()
+{
+    parent::init();
+
+    $this->registerController('my', MyController::className()); // creating controller alias (@see $controllerMap)
+    $this->registerRoutes([
+        $this->urlPrefix . '/my' => $this->id . '/my/index' // creating rule
+    ]);
+}
+```
+
+Now go to `/admin/my` and you can see your page.
