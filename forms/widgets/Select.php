@@ -47,8 +47,6 @@ class Select extends InputWidget
             foreach ($this->items as $i => $model) {
                 $this->items[$i] = AdminHelper::resolveAttribute($this->labelAttribute, $model);
             }
-
-            $this->multiple = $this->query->multiple;
         }
         parent::init();
     }
