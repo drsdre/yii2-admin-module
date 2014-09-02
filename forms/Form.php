@@ -208,4 +208,17 @@ class Form extends ActiveForm
     {
         return $this->model->save();
     }
+
+    public function load($data, $formName = null)
+    {
+        $scope = $formName === null ? $this->model->formName() : $formName;
+        if ($scope != '' && isset($data[$scope])) {
+            $data = $data[$scope];
+        }
+
+        foreach ($data as $attribute => $value) {
+            $this->model->{$attribute} = $value;
+        }
+        return true;
+    }
 }

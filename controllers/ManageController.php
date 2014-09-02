@@ -103,7 +103,7 @@ class ManageController extends Controller
                 'model' => $this->model,
             ], $this->entity->form('update')));
 
-            $form->model->load(Yii::$app->getRequest()->getBodyParams());
+            $form->load(Yii::$app->getRequest()->getBodyParams());
             $form->runActions();
             if ($form->model->validate()) {
                 if ($form->saveModel()) {
@@ -156,7 +156,7 @@ class ManageController extends Controller
                 'model' => $model,
             ], $this->entity->form('update')));
 
-            $form->model->load(Yii::$app->getRequest()->getBodyParams());
+            $form->load(Yii::$app->getRequest()->getBodyParams());
             if ($form->model->validate()) {
                 if ($form->saveModel()) {
                     $this->module->trigger(Entity::EVENT_CREATE_SUCCESS, new Event([
