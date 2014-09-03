@@ -34,8 +34,8 @@ AdminAsset::register($this);
 
     <?php
         NavBar::begin([
-//            'brandLabel' => 'My Company',
-//            'brandUrl' => Yii::$app->homeUrl,
+            'brandLabel' => Yii::t('admin', 'Dashboard'),
+            'brandUrl' => ['admin/index'],
             'options' => [
                 'class' => 'navbar navbar-inverse navbar-fixed-top',
             ],
@@ -59,12 +59,12 @@ AdminAsset::register($this);
                 <?php else:?>
                     <a href="javascript:;" data-toggle="collapse" data-target="#sidebar-menu<?=$i?>"><?=$menuItem['label']?> <i class="fa fa-fw fa-caret-down"></i></a>
                     <ul id="sidebar-menu<?=$i?>" class="collapse">
-	                    <?php $items = isset($menuItem['items']) ? $menuItem['items'] : []?>
-	                    <?php foreach($items as $item):?>
+                        <?php $items = isset($menuItem['items']) ? $menuItem['items'] : []?>
+                        <?php foreach($items as $item):?>
                         <li>
                             <a href="<?=Url::to($item['url'])?>"><?=$item['label']?></a>
                         </li>
-		                <?php endforeach?>
+                        <?php endforeach?>
                     </ul>
                 <?php endif?>
                 </li>

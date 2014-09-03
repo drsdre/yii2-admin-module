@@ -3,12 +3,12 @@
 
 namespace asdfstudio\admin;
 
-use asdfstudio\admin\models\Item;
 use asdfstudio\admin\models\menu\Menu;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use asdfstudio\admin\helpers\AdminHelper;
+use yii\base\Model;
+use yii\helpers\Inflector;
 
 
 class Module extends \yii\base\Module implements BootstrapInterface
@@ -26,7 +26,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * Registered models
      * @var array
      */
-    public $items = [];
+    public $entities = [];
+    /**
+     * Contains Class => Id for fast search
+     * @var array
+     */
+    public $entitiesClasses = [];
+
     /**
      * Top menu navigation
      * Example configuration
@@ -90,13 +96,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->registerRoutes([
-            $this->urlPrefix . ''                                           => 'admin/admin/index',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>'                   => 'admin/manage/index',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/create'            => 'admin/manage/create',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
+            $this->urlPrefix . ''                                             => 'admin/admin/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>'                   => 'admin/manage/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/create'            => 'admin/manage/create',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
         ]);
+
+        $this->registerTranslations();
     }
 
     /**
@@ -113,23 +121,109 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @param bool $forceRegister
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerItem($className, $forceRegister = false)
+    public function registerEntity($className, $forceRegister = false)
     {
-        $id = call_user_func([$className, 'adminSlug']);
+        $id = call_user_func([$className, 'slug']);
 
-        if (isset($this->items[$id]) && !$forceRegister) {
+        if (isset($this->entities[$id]) && !$forceRegister) {
             throw new InvalidConfigException(sprintf('Item with id "%s" already registered', $id));
         }
 
-        $label = call_user_func([$className, 'adminLabels']);
-        $label = (is_array($label)) ? $label[0] : $label;
-        $attributes = call_user_func([$className, 'adminAttributes']);
-        $attributes =  AdminHelper::normalizeAttributes($attributes, $className);
-        $this->items[$id] = new Item([
+        $labels = call_user_func([$className, 'labels']);
+        $attributes = call_user_func([$className, 'attributes']);
+        $attributes =  static::normalizeAttributes($attributes, $className);
+        $this->entities[$id] = new $className([
             'id' => $id,
-            'class' => $className,
-            'label' => $label,
-            'adminAttributes' => $attributes,
+            'modelClass' => $className,
+            'labels' => $labels,
+            'attributes' => $attributes,
         ]);
+        $this->entitiesClasses[$className] = $id;
+    }
+
+    /**
+     * Register controller in module. Needed for creating custom pages
+     * @param string $id
+     * @param string $controller
+     */
+    public function registerController($id, $controller)
+    {
+        $this->controllerMap[$id] = [
+            'class' => $controller,
+        ];
+    }
+
+    /**
+     * Register translations
+     */
+    protected function registerTranslations()
+    {
+        $i18n = Yii::$app->i18n;
+        $i18n->translations['admin'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en',
+            'basePath' => '@vendor/asdf-studio/yii2-admin-module/messages',
+        ];
+    }
+
+    /**
+     * Normalizes the attribute specifications.
+     * @throws InvalidConfigException
+     */
+    public static function normalizeAttributes($attributes, $class = null)
+    {
+        $model = null;
+        if ($class) {
+            $modelClass = call_user_func([$class, 'model']);
+            $model = new $modelClass;
+        }
+
+        $newAttributes = [];
+        foreach ($attributes as $i => $attribute) {
+            if (is_string($attribute)) {
+                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+                    throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
+                }
+                $attribute = [
+                    'attribute' => $matches[1],
+                    'format' => isset($matches[3]) ? $matches[3] : 'text',
+                    'label' => isset($matches[5]) ? $matches[5] : null,
+                ];
+            }
+
+            if (!is_array($attribute)) {
+                throw new InvalidConfigException('The attribute configuration must be an array.');
+            }
+
+            if (isset($attribute['visible']) && !$attribute['visible']) {
+                continue;
+            }
+
+            if (!isset($attribute['format'])) {
+                $attribute['format'] = 'text';
+            }
+
+            if (!isset($attribute['visible'])) {
+                $attribute['visible'] = true;
+            }
+            if (!isset($attribute['editable'])) {
+                $attribute['editable'] = true;
+            }
+
+            if (!isset($attribute['format'])) {
+                $attribute['format'] = 'text';
+            }
+
+            if (isset($attribute['attribute'])) {
+                $attributeName = $attribute['attribute'];
+                if (!isset($attribute['label'])) {
+                    $attribute['label'] = $model instanceof Model ? $model->getAttributeLabel($attributeName) : Inflector::camel2words($attributeName, true);
+                }
+            } elseif (!isset($attribute['label']) || !isset($attribute['attribute'])) {
+                throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
+            }
+            $newAttributes[$i] = $attribute;
+        }
+        return $newAttributes;
     }
 }

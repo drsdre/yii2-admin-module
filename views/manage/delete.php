@@ -6,13 +6,13 @@ use yii\bootstrap\ActiveForm;
 /**
  * @var yii\web\View $this
  * @var yii\db\ActiveRecord $model
- * @var asdfstudio\admin\models\Item $item
+ * @var asdfstudio\admin\base\Entity $entity
  */
 
-$this->title = $item->label;
-$this->params['breadcrumbs'][] = ['label' => $item->label, 'url' => ['index', 'item' => $item->id]];
-$this->params['breadcrumbs'][] = ['label' => 'Просмотр', 'url' => ['view', 'item' => $item->id, 'id' => $model->primaryKey]];
-$this->params['breadcrumbs'][] = 'Delete';
+$this->title = $entity->labels[0];
+$this->params['breadcrumbs'][] = ['label' => $entity->labels[1], 'url' => ['index', 'item' => $entity->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'View'), 'url' => ['view', 'entity' => $entity->id, 'id' => $model->primaryKey]];
+$this->params['breadcrumbs'][] = Yii::t('admin', 'Deleting');
 ?>
 <div class="model-delete">
 
@@ -20,12 +20,14 @@ $this->params['breadcrumbs'][] = 'Delete';
 
         <?php $form = ActiveForm::begin(); ?>
 
-        <?php echo Html::submitButton('Delete', [
+        <h3><?php echo Yii::t('admin', 'Are you sure you want to delete this item?')?></h3>
+
+        <?php echo Html::submitButton(Yii::t('admin', 'Delete'), [
             'class' => 'btn btn-danger'
         ])?>
-        <?php echo Html::a('Cancel', [
+        <?php echo Html::a(Yii::t('admin', 'Cancel'), [
             'view',
-            'item' => $item->id,
+            'entity' => $entity->id,
             'id' => $model->primaryKey,
         ], [
             'class' => 'btn btn-primary'

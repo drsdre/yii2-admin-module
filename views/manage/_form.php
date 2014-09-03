@@ -1,55 +1,21 @@
 <?php
 
-use yii\helpers\Html;
-use asdfstudio\admin\widgets\ActiveSelect;
-use yii\bootstrap\ActiveForm;
-use vova07\imperavi\Widget as ImperaviWidget;
+use yii\helpers\ArrayHelper;
 
 /**
  * @var yii\web\View $this
  * @var yii\db\ActiveRecord $model
  * @var yii\widgets\ActiveForm $form
- * @var asdfstudio\admin\models\Item $item
+ * @var asdfstudio\admin\base\Entity $entity
+ * @var asdfstudio\admin\forms\Form $formClass
+ * @var string $scenario
  */
+$formOptions = $entity::form($scenario);
+$formClass = $formOptions['class'];
 ?>
 
-<div class="model-form">
-
-    <?php $form = ActiveForm::begin(); ?>
-
-    <div class="form-group">
-        <?php foreach($item->adminAttributes as $attribute) {
-            $format = (is_array($attribute['format']) ? $attribute['format'][0] : $attribute['format']);
-
-            if ($format == 'model' || $form == 'models') {
-                echo $form->field($model, $attribute['attribute'])->widget(ActiveSelect::className(), [
-                    'options' => $attribute,
-                    'labelAttribute' => (is_array($attribute['format']) ? $attribute['format'][1]['labelAttribute'] : $attribute['format'])
-                ]);
-            } elseif ($format == 'html') {
-                echo $form->field($model, $attribute['attribute'])->widget(ImperaviWidget::className(), [
-                    'settings' => [
-                        'lang' => Yii::$app->language,
-                        'minHeight' => 400,
-                        'pastePlainText' => true,
-                        'plugins' => [
-                            'clips',
-                        ]
-                    ]
-                ]);
-            } elseif ($format == 'list') {
-                $list = (is_array($attribute['format']) ? $attribute['format'][1] : []);
-                echo $form->field($model, $attribute['attribute'])->dropDownList($list);
-            } else {
-                echo $form->field($model, $attribute['attribute']);
-            }
-        }?>
-    </div>
-
-    <?php echo Html::submitButton('Save', [
-        'class' => 'btn btn-success'
-    ])?>
-
-    <?php ActiveForm::end(); ?>
-
+<div class="model-form row">
+    <?php echo $formClass::widget(ArrayHelper::merge([
+        'model' => $model,
+    ], $formOptions))?>
 </div>

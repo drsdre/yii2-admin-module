@@ -1,7 +1,7 @@
 {
     "name": "asdf-studio/yii2-admin-module",
     "description": "Admin module for Yii2 framework",
-    "license": "BSD",
+    "license": "BSD-3-Clause",
     "homepage": "http://asdf-studio.net/docs/yii2-admin-module",
     "type": "yii2-extension",
     "authors": [
@@ -12,7 +12,6 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "vova07/yii2-imperavi-widget": "*",
         "rmrevin/yii2-fontawesome": "2.2.1",
         "cakebake/yii2-bootstrap-select": "*",
         "asdf-studio/yii2-block": "*"
