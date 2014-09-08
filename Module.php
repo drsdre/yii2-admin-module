@@ -3,7 +3,6 @@
 
 namespace asdfstudio\admin;
 
-use asdfstudio\admin\models\Item;
 use asdfstudio\admin\models\menu\Menu;
 use Yii;
 use yii\base\BootstrapInterface;
@@ -27,7 +26,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * Registered models
      * @var array
      */
-    public $items = [];
+    public $entities = [];
+    /**
+     * Contains Class => Id for fast search
+     * @var array
+     */
+    public $entitiesClasses = [];
+
     /**
      * Top menu navigation
      * Example configuration
@@ -91,12 +96,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->registerRoutes([
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>'                   => 'admin/manage/index',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/create'            => 'admin/manage/create',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
-            $this->urlPrefix . '/manage/<item:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
+            $this->urlPrefix . ''                                             => 'admin/admin/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>'                   => 'admin/manage/index',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/create'            => 'admin/manage/create',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>'        => 'admin/manage/view',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/update' => 'admin/manage/update',
+            $this->urlPrefix . '/manage/<entity:[\w\d-_]+>/<id:[\d]+>/delete' => 'admin/manage/delete',
         ]);
+
+        $this->registerTranslations();
     }
 
     /**
@@ -113,35 +121,61 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @param bool $forceRegister
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerItem($className, $forceRegister = false)
+    public function registerEntity($className, $forceRegister = false)
     {
-        $id = call_user_func([$className, 'adminSlug']);
+        $id = call_user_func([$className, 'slug']);
 
-        if (isset($this->items[$id]) && !$forceRegister) {
+        if (isset($this->entities[$id]) && !$forceRegister) {
             throw new InvalidConfigException(sprintf('Item with id "%s" already registered', $id));
         }
 
-        $label = call_user_func([$className, 'adminLabels']);
-        $label = (is_array($label)) ? $label[0] : $label;
-        $attributes = call_user_func([$className, 'adminAttributes']);
-        $attributes = $this->normalizeAttributes($attributes, $className);
-        $this->items[$id] = new Item([
+        $labels = call_user_func([$className, 'labels']);
+        $attributes = call_user_func([$className, 'attributes']);
+        $attributes =  static::normalizeAttributes($attributes, $className);
+        $this->entities[$id] = new $className([
             'id' => $id,
-            'class' => $className,
-            'label' => $label,
-            'modelAttributes' => $attributes,
+            'modelClass' => $className,
+            'labels' => $labels,
+            'attributes' => $attributes,
         ]);
+        $this->entitiesClasses[$className] = $id;
+    }
+
+    /**
+     * Register controller in module. Needed for creating custom pages
+     * @param string $id
+     * @param string $controller
+     */
+    public function registerController($id, $controller)
+    {
+        $this->controllerMap[$id] = [
+            'class' => $controller,
+        ];
+    }
+
+    /**
+     * Register translations
+     */
+    protected function registerTranslations()
+    {
+        $i18n = Yii::$app->i18n;
+        $i18n->translations['admin'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en',
+            'basePath' => '@vendor/asdf-studio/yii2-admin-module/messages',
+        ];
     }
 
     /**
      * Normalizes the attribute specifications.
      * @throws InvalidConfigException
      */
-    protected function normalizeAttributes($attributes, $class = null)
+    public static function normalizeAttributes($attributes, $class = null)
     {
         $model = null;
         if ($class) {
-            $model = new $class([]);
+            $modelClass = call_user_func([$class, 'model']);
+            $model = new $modelClass;
         }
 
         $newAttributes = [];
@@ -169,9 +203,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 $attribute['format'] = 'text';
             }
 
-            if (!isset($attribute['multiple'])) {
-                $attribute['multiple'] = false;
+            if (!isset($attribute['visible'])) {
+                $attribute['visible'] = true;
             }
+            if (!isset($attribute['editable'])) {
+                $attribute['editable'] = true;
+            }
+
+            if (!isset($attribute['format'])) {
+                $attribute['format'] = 'text';
+            }
+
             if (isset($attribute['attribute'])) {
                 $attributeName = $attribute['attribute'];
                 if (!isset($attribute['label'])) {
